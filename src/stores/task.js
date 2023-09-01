@@ -6,30 +6,13 @@ export const useTaskStore = defineStore('task', () => {
 
     // states
     const tasks = ref([])
-    const newTask = ref('')
-    const taskMsg = ref('')
     const taskToUpdateObj = ref({});
     const taskToUpdate = ref('')
-    const msgStatus = ref('')
-
-    // actions
-    const taskInput = () => {
-        if (newTask.value.length < 1) {
-            taskMsg.value = 'the task field is required'
-            msgStatus.value = 'text-danger'
-        } else if (newTask.value.length < 3) {
-            taskMsg.value = 'at least 3 character'
-            msgStatus.value = 'text-warning'
-        } else {
-            taskMsg.value = 'Great'
-            msgStatus.value = 'text-success'
-        }
-    }
 
     // handling api
     // read tasks
     const readTasks = () => {
-        fetch('http://blog.test/api/tasks')
+        fetch('http://127.0.0.1:8000/api/tasks')
             .then(res => res.json())
             .then(data => {
                 tasks.value = data.tasks
@@ -39,28 +22,24 @@ export const useTaskStore = defineStore('task', () => {
     readTasks()
 
     // create tasks
-    const addTask = () => {
-        const task = { "title": newTask.value }
-
-        fetch('http://blog.test/api/tasks', {
+    const addTask = (fromdata) => {
+        
+        fetch('http://127.0.0.1:8000/api/tasks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(task)
+            body: JSON.stringify(fromdata)
         })
             .then(res => res.json())
             .then(data => {
                 if (data.status !== 'passes') {
                     taskMsg.value = data.title[0]
                 } else {
-                    tasks.value.push(task)
+                    tasks.value.push(fromdata)
                 }
             })
-            .catch(err => console.log(err))
-
-        // const task = { id: Math.floor(Math.random() * 1000), title: newTask.value }
-        newTask.value = ''
+            .catch(err => console.log(err)) 
     }
 
 
@@ -95,12 +74,8 @@ export const useTaskStore = defineStore('task', () => {
 
     return { 
         tasks, 
-        newTask, 
-        taskMsg, 
         taskToUpdate, 
         taskToUpdateObj, 
-        msgStatus, 
-        taskInput,
         readTasks,
         addTask,
         editTask,

@@ -10,9 +10,25 @@
     </div>
 
     <div v-else>
-      <FormKit type="form">
-        <FormKit type="text" id="name" placeholder="Enter Your Task" />
-        <button class="btn btn-success" type="button" @click="taskStore.addTask">Add</button>
+      <FormKit 
+      type="form"
+      :actions="false"
+      @submit="taskStore.addTask"
+      id="taskForm"
+      >
+        <FormKit 
+        type="text" 
+        id="title" 
+        name="title" 
+        validator="required|length:3" 
+        :error="[]" 
+        input-class="form-control" 
+        placeholder="Enter Your Task" />
+
+        <FormKit 
+        type="submit" 
+        label="Save" 
+        input-class="btn btn-success" />
       </FormKit>
       <span :class="msgStatus">{{ taskMsg }}</span>
     </div>
